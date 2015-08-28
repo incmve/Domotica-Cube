@@ -55,8 +55,11 @@ void loop() {
                 int   ones = (temperature%10); // extract ones from temperature
                 int tens = ((temperature/10)%10); // extract tens from temperature
                   if (debug) {
+                              Serial.print("Temp: ");
                               Serial.println(temperature);
+                              Serial.print("Ones: ");
                               Serial.println(ones);
+                              Serial.print("Tens: ");
                               Serial.println(tens);
                              }
                 int temp1 = tens;
@@ -69,6 +72,7 @@ void loop() {
               }
   }
   if (debug) {
+              Serial.print("Nightmode: ");
               Serial.println(NIGHT);
               }
 }
@@ -200,7 +204,8 @@ void egg(NewRemoteCode receivedCode) {
         analogWrite(ledPinB, 0);
         NIGHT = 1; // LED display off
         if (debug)  {
-                   Serial.println(NIGHT);
+                    Serial.print("Nightmode: ");
+                    Serial.println(NIGHT);
                     }
         lc.shutdown(0,true);
         lc.shutdown(1,true);
