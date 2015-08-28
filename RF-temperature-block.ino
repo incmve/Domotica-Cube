@@ -1,47 +1,39 @@
-//We always have to include the library
+/*
+ Replacement of my glowing egg http://www.maredana.nl/home-automation/woonkamer-cv-raspberry/
+ Source:  https://github.com/incmve/RF-temperature-block
+ 3D printer model: http://www.thingiverse.com/thing:988027 
+ */
+
+
+//Includes
 #include "LedControlMS.h"
 #include <dht.h>
 #include <NewRemoteReceiver.h>
 
-/*
- Now we need a LedControl to work with.
- ***** These pin numbers will probably not work with your hardware *****
- pin 12 is connected to the DataIn 
- pin 11 is connected to the CLK 
- pin 10 is connected to LOAD 
- We have only a single MAX72XX.
- */
-#define NBR_MTX 2 
-#define DHT11_PIN 8
-LedControl lc=LedControl(12,11,10, NBR_MTX);
-dht DHT;
-int ledPinR = 5;    // Red LED connected to digital pin 5
-int ledPinB = 9;    // Blue LED connected to digital pin 9
-int ledPinG = 6;    // Green LED connected to digital pin 6
-int NIGHT = 0;
+//Define pins
+#define NBR_MTX 2 // number of 8x8 displays
+#define DHT11_PIN 8 // DHT11 pin
+#define ledPinR 5    // Red LED connected to digital pin 5
+#define ledPinB 9    // Blue LED connected to digital pin 9
+#define ledPinG 6    // Green LED connected to digital pin 6
+LedControl lc=LedControl(12,11,10, NBR_MTX); // DataIn,CLK,LOAD, number of displays
 
-/* we always wait a bit between updates of the display */
-//unsigned long delaytime=300;
+// Variables
+int NIGHT = 0;      // 0 daytime, 1 Night mode
+dht DHT;
 
 
 void setup() {
-  /*
-   The MAX72XX is in power-saving mode on startup,
-   we have to do a wakeup call
-   */
-   NewRemoteReceiver::init(0, 2, egg);
+    NewRemoteReceiver::init(0, 2, egg); // RF receiver on pin 2
   Serial.begin (9600);
   Serial.println("Setup");
   lc.shutdown(0,false);// turn off power saving, enables display
-  lc.setIntensity(0,8);// sets brightness (0~15 possible values)
-  lc.clearDisplay(0);// clear screen
-
   lc.shutdown(1,false);// turn off power saving, enables display
+  lc.setIntensity(0,8);// sets brightness (0~15 possible values)
   lc.setIntensity(1,8);// sets brightness (0~15 possible values)
-  lc.clearDisplay(1);// clear screen
+  lc.clearDisplay(0);// clear screen just in case
+  lc.clearDisplay(1);// clear screen just in case
   }
-
-
 
 
 void loop() { 
@@ -49,33 +41,33 @@ void loop() {
   if (NIGHT == 0) {
     lc.shutdown(0,false);
     lc.shutdown(1,false);
-  int chk = DHT.read11(DHT11_PIN);
+    int chk = DHT.read11(DHT11_PIN);
     Serial.println(chk);
     
-    switch (chk)
-    {
-      case DHTLIB_OK:
-      float humfloat = DHT.temperature;
-      int temperature = humfloat;
-        int   ones = (temperature%10);
- int tens = ((temperature/10)%10);
-      Serial.println(temperature);
-      Serial.println(ones);
-      Serial.println(tens);
-    //  delay(10000); // wait for 10 seconds to go to next sensor
- int temp1 = tens;
- int temp2 = ones;
-  lc.displayChar(0 , temp1);
-  lc.displayChar(1 , temp2);
-  delay(10000);
-  // lc.clearAll();
-      break;
-    }
+      switch (chk)
+              {
+                case DHTLIB_OK:
+                float humfloat = DHT.temperature;
+                int temperature = humfloat - 2;
+                int   ones = (temperature%10); // extract ones from temperature
+                int tens = ((temperature/10)%10); // extract tens from temperature
+                Serial.println(temperature);
+                Serial.println(ones);
+                Serial.println(tens);
+                int temp1 = tens;
+                int temp2 = ones;
+                lc.displayChar(0 , temp1);
+                lc.displayChar(1 , temp2);
+                delay(10000);
+                // lc.clearAll();
+                break;
+              }
   }
   Serial.println(NIGHT);
 }
-void egg(NewRemoteCode receivedCode) {  // Note: interrupts are disabled. You can re-enable them if needed.
-  
+void egg(NewRemoteCode receivedCode) {  
+
+  // debug RF
  Serial.print("Addr ");
   Serial.print(receivedCode.address);
   if (receivedCode.groupBit) {
@@ -107,8 +99,8 @@ void egg(NewRemoteCode receivedCode) {  // Note: interrupts are disabled. You ca
   for(int i = 0; i < 3; i++)
     {
   delay(500);
-  Serial.print("Off"); //print to serial
-       // fade in from min to max in increments of 5 points:
+  Serial.print("Off"); 
+       // fade in from min to max in increments of 1 points:
   for(int fadeValue = 0 ; fadeValue <= 255; fadeValue +=1) { 
     // sets the value (range from 0 to 255):
     analogWrite(ledPinR, fadeValue);         
@@ -116,7 +108,7 @@ void egg(NewRemoteCode receivedCode) {  // Note: interrupts are disabled. You ca
     delay(500);                            
       } 
 
-  // fade out from max to min in increments of 5 points:
+  // fade out from max to min in increments of 1 points:
   for(int fadeValue = 255 ; fadeValue >= 15; fadeValue -=1) { 
     // sets the value (range from 0 to 255):
     analogWrite(ledPinR, fadeValue);         
@@ -134,8 +126,8 @@ void egg(NewRemoteCode receivedCode) {  // Note: interrupts are disabled. You ca
   for(int i = 0; i < 3; i++)
     {
   delay(500);
-  Serial.print("On"); //print to serial
-       // fade in from min to max in increments of 5 points:
+  Serial.print("On"); 
+       // fade in from min to max in increments of 1 points:
   for(int fadeValue = 0 ; fadeValue <= 255; fadeValue +=1) { 
     // sets the value (range from 0 to 255):
     analogWrite(ledPinB, fadeValue);         
@@ -143,7 +135,7 @@ void egg(NewRemoteCode receivedCode) {  // Note: interrupts are disabled. You ca
     delay(500);                            
   } 
 
-  // fade out from max to min in increments of 5 points:
+  // fade out from max to min in increments of 1 points:
   for(int fadeValue = 255 ; fadeValue >= 15; fadeValue -=1) { 
     // sets the value (range from 0 to 255):
     analogWrite(ledPinB, fadeValue);         
@@ -192,10 +184,10 @@ void egg(NewRemoteCode receivedCode) {  // Note: interrupts are disabled. You ca
   }
         if (receivedCode.address == 66 && receivedCode.unit == 9 && receivedCode.switchType == 0) // Unit 66 ID 9 Off signal
   {
-    analogWrite(ledPinR, 0); 
+  analogWrite(ledPinR, 0); 
   analogWrite(ledPinG, 0);
   analogWrite(ledPinB, 0);
-  NIGHT = 1;
+  NIGHT = 1; // LED display off
   Serial.println(NIGHT);
   lc.shutdown(0,true);
   lc.shutdown(1,true);
