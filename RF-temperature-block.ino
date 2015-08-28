@@ -22,6 +22,8 @@ LedControl lc=LedControl(12,11,10, NBR_MTX); // DataIn,CLK,LOAD, number of displ
 int NIGHT = 0;      // 0 daytime, 1 Night mode
 dht DHT;
 
+// 1 = enable debug, 0 = disable debug
+boolean debug = 1;
 
 void setup() {
     NewRemoteReceiver::init(0, 2, egg); // RF receiver on pin 2
@@ -42,8 +44,9 @@ void loop() {
     lc.shutdown(0,false);
     lc.shutdown(1,false);
     int chk = DHT.read11(DHT11_PIN);
-    Serial.println(chk);
-    
+          if (debug)  {
+                Serial.println(chk);
+                      }
       switch (chk)
               {
                 case DHTLIB_OK:
@@ -51,9 +54,11 @@ void loop() {
                 int temperature = humfloat - 2;
                 int   ones = (temperature%10); // extract ones from temperature
                 int tens = ((temperature/10)%10); // extract tens from temperature
-                Serial.println(temperature);
-                Serial.println(ones);
-                Serial.println(tens);
+                  if (debug) {
+                              Serial.println(temperature);
+                              Serial.println(ones);
+                              Serial.println(tens);
+                             }
                 int temp1 = tens;
                 int temp2 = ones;
                 lc.displayChar(0 , temp1);
@@ -63,141 +68,150 @@ void loop() {
                 break;
               }
   }
-  Serial.println(NIGHT);
+  if (debug) {
+              Serial.println(NIGHT);
+              }
 }
 void egg(NewRemoteCode receivedCode) {  
-
-  // debug RF
- Serial.print("Addr ");
-  Serial.print(receivedCode.address);
-  if (receivedCode.groupBit) {
-    Serial.print(" group");
-  } else {
-    Serial.print(" unit ");
-    Serial.print(receivedCode.unit);
-  }
-  
-  switch (receivedCode.switchType) {
-    case 0:
-      Serial.print(" off");
-      break;
-    case 1:
-      Serial.print(" on");
-      break;
-    case 2:
-      Serial.print(" dim level");
-      Serial.print(receivedCode.dimLevel);
-      break;
-  }
-  
-    if (receivedCode.address == 66 && receivedCode.unit == 6 && receivedCode.switchType == 1) // Unit 66 ID 6 On signal
-  {  
-  NIGHT = 0;
-  analogWrite(ledPinR, 0); 
-  analogWrite(ledPinG, 0);
-  analogWrite(ledPinB, 0);
-  for(int i = 0; i < 3; i++)
-    {
-  delay(500);
-  Serial.print("Off"); 
-       // fade in from min to max in increments of 1 points:
-  for(int fadeValue = 0 ; fadeValue <= 255; fadeValue +=1) { 
-    // sets the value (range from 0 to 255):
-    analogWrite(ledPinR, fadeValue);         
-    // wait for 500 milliseconds to see the dimming effect    
-    delay(500);                            
-      } 
-
-  // fade out from max to min in increments of 1 points:
-  for(int fadeValue = 255 ; fadeValue >= 15; fadeValue -=1) { 
-    // sets the value (range from 0 to 255):
-    analogWrite(ledPinR, fadeValue);         
-    // wait for 500 milliseconds to see the dimming effect    
-    delay(500);     
+      if (debug) {
+      // debug RF
+     Serial.print("Addr ");
+     Serial.print(receivedCode.address);
+      if (receivedCode.groupBit) {
+        Serial.print(" group");
+      } else {
+        Serial.print(" unit ");
+        Serial.print(receivedCode.unit);
       }
-    }  
-  }
+      
+      switch (receivedCode.switchType) {
+        case 0:
+          Serial.print(" off");
+          break;
+        case 1:
+          Serial.print(" on");
+          break;
+        case 2:
+          Serial.print(" dim level");
+          Serial.print(receivedCode.dimLevel);
+          break;
+                  }
+                }
+            
+  if (receivedCode.address == 66 && receivedCode.unit == 6 && receivedCode.switchType == 1) // Unit 66 ID 6 On signal
+          {  
+          NIGHT = 0;
+          analogWrite(ledPinR, 0); 
+          analogWrite(ledPinG, 0);
+          analogWrite(ledPinB, 0);
+          for(int i = 0; i < 3; i++)
+            {
+          delay(500);
+            // fade in from min to max in increments of 1 points:
+          for(int fadeValue = 0 ; fadeValue <= 255; fadeValue +=1) { 
+            // sets the value (range from 0 to 255):
+            analogWrite(ledPinR, fadeValue);         
+            // wait for 500 milliseconds to see the dimming effect    
+            delay(500);                            
+              } 
+        
+          // fade out from max to min in increments of 1 points:
+          for(int fadeValue = 255 ; fadeValue >= 15; fadeValue -=1) { 
+            // sets the value (range from 0 to 255):
+            analogWrite(ledPinR, fadeValue);         
+            // wait for 500 milliseconds to see the dimming effect    
+            delay(500);     
+              }
+            }  
+          }
+  
   if (receivedCode.address == 66 && receivedCode.unit == 6 && receivedCode.switchType == 0) // Unit 66 ID 6 Off signal
-  {
-  NIGHT = 0;
-  analogWrite(ledPinR, 0); 
-  analogWrite(ledPinG, 0);
-  analogWrite(ledPinB, 0);
-  for(int i = 0; i < 3; i++)
-    {
-  delay(500);
-  Serial.print("On"); 
-       // fade in from min to max in increments of 1 points:
-  for(int fadeValue = 0 ; fadeValue <= 255; fadeValue +=1) { 
-    // sets the value (range from 0 to 255):
-    analogWrite(ledPinB, fadeValue);         
-    // wait for 500 milliseconds to see the dimming effect    
-    delay(500);                            
-  } 
-
-  // fade out from max to min in increments of 1 points:
-  for(int fadeValue = 255 ; fadeValue >= 15; fadeValue -=1) { 
-    // sets the value (range from 0 to 255):
-    analogWrite(ledPinB, fadeValue);         
-    // wait for 500 milliseconds to see the dimming effect    
-    delay(500);     
-      }
-    }  
-  }
+          {
+        NIGHT = 0;
+        analogWrite(ledPinR, 0); 
+        analogWrite(ledPinG, 0);
+        analogWrite(ledPinB, 0);
+        for(int i = 0; i < 3; i++)
+          {
+        delay(500);
+          // fade in from min to max in increments of 1 points:
+        for(int fadeValue = 0 ; fadeValue <= 255; fadeValue +=1) { 
+          // sets the value (range from 0 to 255):
+          analogWrite(ledPinB, fadeValue);         
+          // wait for 500 milliseconds to see the dimming effect    
+          delay(500);                            
+        } 
+      
+        // fade out from max to min in increments of 1 points:
+        for(int fadeValue = 255 ; fadeValue >= 15; fadeValue -=1) { 
+          // sets the value (range from 0 to 255):
+          analogWrite(ledPinB, fadeValue);         
+          // wait for 500 milliseconds to see the dimming effect    
+          delay(500);     
+            }
+          }  
+        }
   if (receivedCode.address == 66 && receivedCode.unit == 7 && receivedCode.switchType == 0) // Unit 66 ID 7 Off signal
-    {
-  analogWrite(ledPinR, 0); 
-  analogWrite(ledPinG, 0);
-  analogWrite(ledPinB, 0);
-    {
-  BlinkR(ledPinR,10);
-  delay(50);
-    }
-  }
+          {
+        analogWrite(ledPinR, 0); 
+        analogWrite(ledPinG, 0);
+        analogWrite(ledPinB, 0);
+          {
+        BlinkR(ledPinR,10);
+        delay(50);
+          }
+        }
+        
   if (receivedCode.address == 66 && receivedCode.unit == 7 && receivedCode.switchType == 1) // Unit 66 ID 7 On signal
-    {
-  analogWrite(ledPinR, 0); 
-  analogWrite(ledPinG, 0);
-  analogWrite(ledPinB, 0);
-    {
-  BlinkRB(ledPinR,10);
-  delay(50);
-    }
-  }
+          {
+        analogWrite(ledPinR, 0); 
+        analogWrite(ledPinG, 0);
+        analogWrite(ledPinB, 0);
+          {
+        BlinkRB(ledPinR,10);
+        delay(50);
+          }
+        }
+        
   if (receivedCode.address == 66 && receivedCode.unit == 8 && receivedCode.switchType == 0) // Unit 66 ID 8 Off signal
-  {
-    analogWrite(ledPinR, 0); 
-  analogWrite(ledPinG, 0);
-  analogWrite(ledPinB, 0);
-  // Glow Pink
-  analogWrite(ledPinR, 255); 
-  analogWrite(ledPinG, 51);
-  analogWrite(ledPinB, 153); 
-  }
-        if (receivedCode.address == 66 && receivedCode.unit == 8 && receivedCode.switchType == 1) // Unit 66 ID 8 On signal
-  {
-    analogWrite(ledPinR, 0); 
-  analogWrite(ledPinG, 0);
-  analogWrite(ledPinB, 0);
-  // Glow Green
-  analogWrite(ledPinG, 255);
-  }
-        if (receivedCode.address == 66 && receivedCode.unit == 9 && receivedCode.switchType == 0) // Unit 66 ID 9 Off signal
-  {
-  analogWrite(ledPinR, 0); 
-  analogWrite(ledPinG, 0);
-  analogWrite(ledPinB, 0);
-  NIGHT = 1; // LED display off
-  Serial.println(NIGHT);
-  lc.shutdown(0,true);
-  lc.shutdown(1,true);
-  }
-        if (receivedCode.address == 66 && receivedCode.unit == 9 && receivedCode.switchType == 1) // Unit 66 ID 9 On signal
-  {
-    analogWrite(ledPinR, 0); 
-  analogWrite(ledPinG,40);
-  analogWrite(ledPinB, 0);
-  }
+        {
+        analogWrite(ledPinR, 0); 
+        analogWrite(ledPinG, 0);
+        analogWrite(ledPinB, 0);
+        // Glow Pink
+        analogWrite(ledPinR, 255); 
+        analogWrite(ledPinG, 51);
+        analogWrite(ledPinB, 153); 
+        }
+        
+  if (receivedCode.address == 66 && receivedCode.unit == 8 && receivedCode.switchType == 1) // Unit 66 ID 8 On signal
+        {
+        analogWrite(ledPinR, 0); 
+        analogWrite(ledPinG, 0);
+        analogWrite(ledPinB, 0);
+        // Glow Green
+        analogWrite(ledPinG, 255);
+        }
+        
+  if (receivedCode.address == 66 && receivedCode.unit == 9 && receivedCode.switchType == 0) // Unit 66 ID 9 Off signal
+        {
+        analogWrite(ledPinR, 0); 
+        analogWrite(ledPinG, 0);
+        analogWrite(ledPinB, 0);
+        NIGHT = 1; // LED display off
+        if (debug)  {
+                   Serial.println(NIGHT);
+                    }
+        lc.shutdown(0,true);
+        lc.shutdown(1,true);
+        }
+        
+  if (receivedCode.address == 66 && receivedCode.unit == 9 && receivedCode.switchType == 1) // Unit 66 ID 9 On signal
+        {
+        analogWrite(ledPinR, 0); 
+        analogWrite(ledPinG,40);
+        analogWrite(ledPinB, 0);
+        }
 
 
 //Blink routine
