@@ -239,7 +239,13 @@ void LedControl::writeString(int mtx, char * displayString) {
 
 
 void LedControl::displayChar(int matrix, int charIndex) {
-  for (int i=0; i<6;i++) {
+  for (int i=0; i<8;i++) {
       setRow(matrix,i, alphabetBitmap[charIndex][i]);
+  } 
+}
+
+void LedControl::displayChar2(int matrix, int charIndex) {
+  for (int i=0; i<8;i++) {
+      setRow(matrix,i, alphabetBitmap2[charIndex][i]);
   } 
 }
