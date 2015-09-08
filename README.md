@@ -13,5 +13,9 @@ Arduino nano
 ESP8266 ESP-01 WIFI (future project)
 DHT11
 MAX7219 Dot 8x8 Led Matrix
+WS2812B RGB LED
 
 http://www.thingiverse.com/thing:988027
+
+RF-temperature-block.ino RGB LED
+RF-temperature-block_V2.ino WS2812B RGB LED
