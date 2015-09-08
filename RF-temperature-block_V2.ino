@@ -115,14 +115,14 @@ void cube(NewRemoteCode receivedCode) {
                pixels.show();
           for(int i = 0; i < 3; i++)
             {
-          delay(500);
+         
             // fade in from min to max in increments of 1 points:
           for(int fadeValue = 0 ; fadeValue <= 255; fadeValue +=1) { 
             // sets the value (range from 0 to 255):
                pixels.setPixelColor(0, fadeValue,0,0);
                pixels.show();
             // wait for 500 milliseconds to see the dimming effect    
-            delay(500);                            
+            delay(10);                            
               } 
                
           // fade out from max to min in increments of 1 points:
@@ -131,7 +131,7 @@ void cube(NewRemoteCode receivedCode) {
                pixels.setPixelColor(0, fadeValue,0,0);
                pixels.show();
             // wait for 500 milliseconds to see the dimming effect    
-            delay(500);     
+           delay(10);     
               }
             }  
           }
@@ -143,14 +143,13 @@ void cube(NewRemoteCode receivedCode) {
                pixels.show();
         for(int i = 0; i < 3; i++)
           {
-        delay(500);
           // fade in from min to max in increments of 1 points:
         for(int fadeValue = 0 ; fadeValue <= 255; fadeValue +=1) { 
           // sets the value (range from 0 to 255):
                pixels.setPixelColor(0, 0,0,fadeValue);
                pixels.show();
           // wait for 500 milliseconds to see the dimming effect    
-          delay(500);                            
+          delay(10);                            
         }
                pixels.setPixelColor(0, black);
                pixels.show(); 
@@ -161,7 +160,7 @@ void cube(NewRemoteCode receivedCode) {
                pixels.setPixelColor(0, 0,0,fadeValue);
                pixels.show();
           // wait for 500 milliseconds to see the dimming effect    
-          delay(500);     
+          delay(10);     
             }
           }  
         }
@@ -205,13 +204,14 @@ void cube(NewRemoteCode receivedCode) {
                     }
         lc.shutdown(0,true); //turn off matrix
         lc.shutdown(1,true);
+        NIGHT = 1;
         }
         
   if (receivedCode.address == 66 && receivedCode.unit == 9 && receivedCode.switchType == 1) // Unit 66 ID 9 On signal
         {
         pixels.setPixelColor(0, black);
         pixels.show(); // This sends the updated pixel color to the hardware
-        pixels.setPixelColor(0, pixels.Color(0,127,0)); // glow green (n, red, green, blue)
+        pixels.setPixelColor(0, pixels.Color(0,64,0)); // glow green (n, red, green, blue)
         pixels.show(); // This sends the updated pixel color to the hardware
         }
 
@@ -226,7 +226,7 @@ void BlinkR(int times) //Unit 66 ID 7 On Blink
   pixels.show();
   pixels.setPixelColor(0, red);
   pixels.show();
-  delay (10000);
+  delay (100);
  }
 }
 void BlinkRB(int times) //Blink red/blue
@@ -237,22 +237,21 @@ void BlinkRB(int times) //Blink red/blue
   pixels.show();
   pixels.setPixelColor(0, red);
   pixels.show();
-  delay (10000);
+  delay (100);
   pixels.setPixelColor(0, black);
   pixels.show();
   pixels.setPixelColor(0, blue);
   pixels.show();
-  delay (10000);
+  delay (100);
   pixels.setPixelColor(0, black);
   pixels.show();
   pixels.setPixelColor(0, red);
   pixels.show();
-  delay (10000);
+  delay (100);
   pixels.setPixelColor(0, black);
   pixels.show();
   pixels.setPixelColor(0, blue);
   pixels.show();
-  delay (10000);
+  delay (100);
  }
 }
-
