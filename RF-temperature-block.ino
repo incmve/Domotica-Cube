@@ -1,3 +1,4 @@
+
 /*
  Replacement of my glowing egg http://www.maredana.nl/home-automation/woonkamer-cv-raspberry/
  Source:  https://github.com/incmve/RF-temperature-block
@@ -13,9 +14,9 @@
 //Define pins
 #define NBR_MTX 2 // number of 8x8 displays
 #define DHT11_PIN 8 // DHT11 pin
-#define ledPinR 5    // Red LED connected to digital pin 5
-#define ledPinB 9    // Blue LED connected to digital pin 9
-#define ledPinG 6    // Green LED connected to digital pin 6
+#define ledPinR 3    // Red LED connected to digital pin 5
+#define ledPinB 6    // Blue LED connected to digital pin 9
+#define ledPinG 5    // Green LED connected to digital pin 6
 LedControl lc=LedControl(12,11,10, NBR_MTX); // DataIn,CLK,LOAD, number of displays
 
 // Variables
@@ -23,7 +24,7 @@ int NIGHT = 0;      // 0 daytime, 1 Night mode
 dht DHT;
 
 // 1 = enable debug, 0 = disable debug
-boolean debug = 1;
+boolean debug = 0;
 
 void setup() {
     NewRemoteReceiver::init(0, 2, egg); // RF receiver on pin 2
@@ -31,8 +32,8 @@ void setup() {
   Serial.println("Setup");
   lc.shutdown(0,false);// turn off power saving, enables display
   lc.shutdown(1,false);// turn off power saving, enables display
-  lc.setIntensity(0,8);// sets brightness (0~15 possible values)
-  lc.setIntensity(1,8);// sets brightness (0~15 possible values)
+  lc.setIntensity(0,6);// sets brightness (0~15 possible values)
+  lc.setIntensity(1,6);// sets brightness (0~15 possible values)
   lc.clearDisplay(0);// clear screen just in case
   lc.clearDisplay(1);// clear screen just in case
   }
@@ -65,7 +66,7 @@ void loop() {
                 int temp1 = tens;
                 int temp2 = ones;
                 lc.displayChar(0 , temp1);
-                lc.displayChar(1 , temp2);
+                lc.displayChar2(1 , temp2);
                 delay(10000);
                 // lc.clearAll();
                 break;
