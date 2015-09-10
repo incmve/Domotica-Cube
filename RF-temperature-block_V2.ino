@@ -36,8 +36,8 @@ void setup() {
   Serial.println("Setup");
   lc.shutdown(0,false);// turn off power saving, enables display
   lc.shutdown(1,false);// turn off power saving, enables display
-  lc.setIntensity(0,6);// sets brightness (0~15 possible values)
-  lc.setIntensity(1,6);// sets brightness (0~15 possible values)
+  lc.setIntensity(0,1);// sets brightness (0~15 possible values)
+  lc.setIntensity(1,1);// sets brightness (0~15 possible values)
   lc.clearDisplay(0);// clear screen just in case
   lc.clearDisplay(1);// clear screen just in case
   pixels.begin();
@@ -255,3 +255,4 @@ void BlinkRB(int times) //Blink red/blue
   delay (100);
  }
 }
+
